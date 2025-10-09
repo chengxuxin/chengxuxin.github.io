@@ -1,0 +1,6 @@
+@inproceedings{yan2025maniflow,
+  title={{ManiFlow}: A General Robot Manipulation Policy via Consistency Flow Training},
+  author={Yan, Ge and Zhu, Jiyue and Deng, Yuquan and Yang, Shiqi and Qiu, Ri-Zhao and Cheng, Xuxin and Memmel, Marius and Krishna, Ranjay and Goyal, Ankit and Wang, Xiaolong and Fox, Dieter},
+  booktitle={Conference on Robot Learning (CoRL)},
+  year={2025}
+}
