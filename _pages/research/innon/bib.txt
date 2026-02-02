@@ -1,0 +1,9 @@
+@misc{cai2025innon,
+  title={In-N-On: Scaling Egocentric Manipulation with In-the-Wild and On-Task Data},
+  author={Cai, Xiongyi and Qiu, Ri-Zhao and Chen, Geng and Wei, Lai and Liu, Isabella and Huang, Tianshu and Cheng, Xuxin and Wang, Xiaolong},
+  year={2025},
+  eprint={2511.15704},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2511.15704}
+}

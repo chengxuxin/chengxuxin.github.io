@@ -1,0 +1,6 @@
+@inproceedings{wei2026hmc,
+  title={HMC: Learning Heterogeneous Meta-Control for Contact-Rich Loco-Manipulation},
+  author={Wei, Lai and Peng, Xuanbin and Qiu, Ri-Zhao and Huang, Tianshu and Cheng, Xuxin and Wang, Xiaolong},
+  booktitle={IEEE International Conference on Robotics and Automation (ICRA)},
+  year={2026}
+}
