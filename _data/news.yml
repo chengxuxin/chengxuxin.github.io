@@ -1,0 +1,16 @@
+# One entry per line of news. `date` is a display string; `text` supports
+# markdown links: [label](https://example.com)
+- date: May 2026
+  text: "Assured Robot Intelligence acquired by Meta"
+- date: Jun 2025
+  text: "Invited talk at Meta"
+- date: Mar 2025
+  text: "Multiple work featured on Nvidia GTC"
+- date: Jun 2024
+  text: "Invited talk at [Covariant](https://covariant.ai/)"
+- date: Mar 2024
+  text: "Invited talk at UMich Computer Vision Seminar"
+- date: Feb 2024
+  text: "Invited talk at [Mila Robot Learning Seminar](https://www.youtube.com/watch?v=ZKWi_BXq0PQ)"
+- date: Oct 2023
+  text: "Invited talk at [Stanford REAL Lab](https://real.stanford.edu/)"

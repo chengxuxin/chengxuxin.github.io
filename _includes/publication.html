@@ -1,0 +1,45 @@
+{% comment %}
+  Renders one publication card. Expects `pub` (a document from the
+  _publications collection). See README.md for the front-matter format.
+{% endcomment %}
+<article class="pub" id="{{ pub.abbr }}">
+  <div class="pub-thumb">
+    {% if pub.video %}
+    <a href="{{ pub.website }}">
+      <video src="{{ pub.video | relative_url }}" poster="{{ pub.image | relative_url }}" muted loop playsinline preload="none"></video>
+    </a>
+    {% elsif pub.gif %}
+    <a href="{{ pub.website }}">
+      <img src="{{ pub.image | relative_url }}" data-gif="{{ pub.gif | relative_url }}" alt="{{ pub.title }}" loading="lazy">
+    </a>
+    {% else %}
+    <a href="{{ pub.website }}">
+      <img src="{{ pub.image | relative_url }}" alt="{{ pub.title }}" loading="lazy">
+    </a>
+    {% endif %}
+  </div>
+  <div class="pub-body">
+    <h3 class="pub-title"><a href="{{ pub.website }}">{{ pub.title }}</a></h3>
+    <p class="pub-authors">{{ pub.authors | replace: site.name, site.name_bold }}</p>
+    <p class="pub-venue">
+      {{ pub.venue }}{% if pub.award %} <span class="pub-award">({{ pub.award }})</span>{% endif %}
+      {% if pub.note %}<span class="pub-note">{{ pub.note }}</span>{% endif %}
+    </p>
+    <div class="pub-links">
+      {% for link in pub.links %}
+      <a class="chip" href="{{ link.url }}">{{ link.name }}</a>
+      {% endfor %}
+      {% if pub.bib %}
+      <details class="pub-bib">
+        <summary>BibTeX</summary>
+        <pre data-src="{{ pub.bib | relative_url }}">Loading&hellip;</pre>
+      </details>
+      {% endif %}
+    </div>
+    {% if pub.media %}
+    <p class="pub-media">Media:
+      {% for m in pub.media %}<a href="{{ m.url }}">{{ m.name }}</a>{% unless forloop.last %} &middot; {% endunless %}{% endfor %}
+    </p>
+    {% endif %}
+  </div>
+</article>

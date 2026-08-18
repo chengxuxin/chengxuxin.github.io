@@ -1,0 +1,20 @@
+---
+abbr: "vbc"
+title: "Visual Whole-Body Control for Legged Loco-Manipulation"
+authors: "Minghuan Liu*, Zixuan Chen*, Xuxin Cheng, Yandong Ji, Ruihan Yang, Xiaolong Wang"
+venue: "CoRL 2024"
+award: "Oral"
+image: "/_pages/research/visual-whole-body/demo.jpg"
+video: "/_pages/research/visual-whole-body/demo.mp4"
+website: "https://wholebody-b1.github.io/"
+links:
+  - name: "Webpage"
+    url: "https://wholebody-b1.github.io/"
+  - name: "arXiv"
+    url: "https://arxiv.org/abs/2403.16967"
+  - name: "Code"
+    url: "https://github.com/Ericonaldo/visual_wholebody"
+  - name: "Video"
+    url: "https://youtu.be/32u3e54VTsk"
+bib: "/_pages/research/visual-whole-body/bib.txt"
+---
