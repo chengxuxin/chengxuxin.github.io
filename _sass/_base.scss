@@ -232,7 +232,6 @@ strong {
 
     img {
       border-radius: 14px;
-      border: 1px solid var(--hairline);
     }
   }
 }
@@ -274,9 +273,10 @@ strong {
 .highlight {
   video {
     width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
     border-radius: var(--radius);
-    border: 1px solid var(--hairline);
-    background: #000;
+    background: var(--chip-bg);
   }
 
   figcaption {
@@ -359,7 +359,6 @@ strong {
     aspect-ratio: 16 / 10;
     object-fit: cover;
     border-radius: var(--radius);
-    border: 1px solid var(--hairline);
     background: var(--chip-bg);
   }
 }
@@ -373,7 +372,7 @@ strong {
   font-size: 16.5px;
   font-weight: 600;
   line-height: 1.4;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
 
   a {
     color: var(--text);
@@ -388,30 +387,46 @@ strong {
 .pub-authors {
   font-size: 14.5px;
   color: var(--muted);
-  margin-bottom: 4px;
+  margin-bottom: 10px;
 
   strong {
     color: var(--text);
   }
 }
 
-.pub-venue {
-  font-size: 14px;
+// Venue / award badges above the title, peterljq-style
+.pub-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+
+.pub-venue-badge,
+.pub-award-badge {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  border-radius: 5px;
+  padding: 3px 9px;
+}
+
+.pub-venue-badge {
   color: var(--muted);
-  font-style: italic;
-  margin-bottom: 10px;
+  background: var(--chip-bg);
+}
 
-  .pub-award {
-    font-style: normal;
-    font-weight: 500;
-    color: var(--accent-warm);
-  }
+.pub-award-badge {
+  color: var(--accent-warm);
+  background: rgba(194, 65, 12, 0.08);
+}
 
-  .pub-note {
-    display: block;
-    font-size: 13px;
-    color: var(--faint);
-  }
+.pub-note {
+  font-size: 13px;
+  color: var(--faint);
+  margin: -4px 0 10px;
 }
 
 .pub-links {

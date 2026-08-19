@@ -20,11 +20,12 @@
   </div>
   <div class="pub-body">
     <h3 class="pub-title"><a href="{{ pub.website }}">{{ pub.title }}</a></h3>
+    <div class="pub-meta">
+      <span class="pub-venue-badge">{{ pub.venue }}</span>
+      {% if pub.award %}<span class="pub-award-badge">{{ pub.award }}</span>{% endif %}
+    </div>
     <p class="pub-authors">{{ pub.authors | replace: site.name, site.name_bold }}</p>
-    <p class="pub-venue">
-      {{ pub.venue }}{% if pub.award %} <span class="pub-award">({{ pub.award }})</span>{% endif %}
-      {% if pub.note %}<span class="pub-note">{{ pub.note }}</span>{% endif %}
-    </p>
+    {% if pub.note %}<p class="pub-note">{{ pub.note }}</p>{% endif %}
     <div class="pub-links">
       {% for link in pub.links %}
       <a class="chip" href="{{ link.url }}">{{ link.name }}</a>

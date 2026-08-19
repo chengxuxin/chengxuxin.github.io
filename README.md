@@ -51,6 +51,15 @@ Your name is bolded automatically in author lists (`name_bold` in `_config.yml`)
 
 Append an entry to `_data/news.yml` or `_data/highlights.yml` — the format is documented at the top of each file.
 
+## Video guidelines
+
+Videos should be H.264 / yuv420p, square pixels, with the moov atom up front,
+or they may show up black or letterboxed in browsers. Normalize any new video with:
+
+```
+ffmpeg -i in.mp4 -c:v libx264 -crf 21 -vf "setsar=1" -pix_fmt yuv420p -movflags +faststart -an out.mp4
+```
+
 ## Run locally
 
 ```
