@@ -21,7 +21,7 @@
   <div class="pub-body">
     <h3 class="pub-title"><a href="{{ pub.website }}">{{ pub.title }}</a></h3>
     <div class="pub-meta">
-      <span class="pub-venue-badge">{{ pub.venue }}</span>
+      {% if pub.venue %}<span class="pub-venue-badge">{{ pub.venue }}</span>{% endif %}
       {% if pub.award %}<span class="pub-award-badge">{{ pub.award }}</span>{% endif %}
     </div>
     <p class="pub-authors">{{ pub.authors | replace: site.name, site.name_bold }}</p>
@@ -31,12 +31,15 @@
       <a class="chip" href="{{ link.url }}">{{ link.name }}</a>
       {% endfor %}
       {% if pub.bib %}
-      <details class="pub-bib">
-        <summary>BibTeX</summary>
-        <pre data-src="{{ pub.bib | relative_url }}">Loading&hellip;</pre>
-      </details>
+      <button class="chip pub-bib-toggle" type="button" aria-expanded="false" aria-controls="bib-{{ pub.abbr }}">BibTeX</button>
       {% endif %}
     </div>
+    {% if pub.bib %}
+    <div class="pub-bib-body" id="bib-{{ pub.abbr }}" hidden>
+      <button class="pub-bib-copy" type="button">Copy</button>
+      <pre data-src="{{ pub.bib | relative_url }}">Loading&hellip;</pre>
+    </div>
+    {% endif %}
     {% if pub.media %}
     <p class="pub-media">Media:
       {% for m in pub.media %}<a href="{{ m.url }}">{{ m.name }}</a>{% unless forloop.last %} &middot; {% endunless %}{% endfor %}

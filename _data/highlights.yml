@@ -2,17 +2,21 @@
 # The ?v= suffix busts browser caches whenever a video file's content changes.
 - title: Extreme Parkour
   url: https://extreme-parkour.github.io
-  video: /videos/pakour_live_demo-comp.mp4?v=2
+  video: /videos/pakour_live_demo-comp.mp4?v=3
+  poster: /videos/posters/parkour.jpg
   caption: "Live demo at CoRL 2023."
 - title: AMO
   url: https://amo-humanoid.github.io/
   video: /videos/amo.mp4
+  poster: /videos/posters/amo.jpg
   caption: "Full kinematic workspace control for humanoids."
 - title: OpenTeleVision
   url: https://robot-tv.github.io/
   video: /videos/tv.mp4?v=2
+  poster: /videos/posters/tv.jpg
   caption: "Coast-to-coast immersive teleoperation."
 - title: Human-as-Robot
   url: https://human-as-robot.github.io/
   video: /videos/human_policy.mp4?v=2
+  poster: /videos/posters/human_policy.jpg
   caption: "Mixing human and humanoid data for scaling up robot learning."

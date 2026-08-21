@@ -1,6 +1,7 @@
 ---
 permalink: /
 layout: default
+image: /images/grad.jpg
 ---
 
 <section class="hero" id="about">
@@ -11,18 +12,18 @@ layout: default
       <a class="chip" href="{{ '/docs/CV.pdf' | relative_url }}">CV</a>
       <a class="chip" href="https://scholar.google.com/citations?hl=en&user=Z8vhOxYAAAAJ&view_op=list_works&sortby=pubdate">Google Scholar</a>
       <a class="chip" href="https://github.com/chengxuxin">GitHub</a>
-      <a class="chip" href="https://twitter.com/xuxin_cheng">Twitter</a>
+      <a class="chip" href="https://x.com/xuxin_cheng">X</a>
     </div>
     <p>I am currently a researcher at Meta. I cofounded Assured Robot Intelligence (acquired by Meta).
       I obtained my PhD from UC San Diego, where I worked with <a href="https://xiaolonw.github.io">Xiaolong Wang</a>.
       I have had the opportunity to work with <a href="https://www.cs.cmu.edu/~dpathak/">Deepak Pathak</a> at CMU,
       as well as <a href="https://hybrid-robotics.berkeley.edu/koushil">Koushil Sreenath</a> and
       <a href="https://people.eecs.berkeley.edu/~pabbeel/">Pieter Abbeel</a> at UC Berkeley.</p>
-    <p class="hero-tagline">I build AI systems that see, think, and act &mdash; in real time.</p>
+    <p class="hero-tagline">I build AI systems that see, think, and act in real time.</p>
     <p>I love 🏂🤿🎾📷🏝️ in my free time.</p>
   </div>
   <div class="hero-photo">
-    <img src="{{ '/images/grad.jpg' | relative_url }}" alt="{{ site.name }}">
+    <img src="{{ '/images/grad.jpg' | relative_url }}" alt="{{ site.name }}" width="600" height="800" fetchpriority="high">
   </div>
 </section>
 
@@ -31,7 +32,7 @@ layout: default
   <div class="highlight-grid">
     {% for item in site.data.highlights %}
     <figure class="highlight">
-      <video src="{{ item.video | relative_url }}" autoplay muted loop playsinline></video>
+      <video class="highlight-video" src="{{ item.video | relative_url }}" poster="{{ item.poster | relative_url }}" muted loop playsinline preload="none" aria-label="{{ item.title }} demo video"></video>
       <figcaption><a href="{{ item.url }}">{{ item.title }}</a> &mdash; {{ item.caption }}</figcaption>
     </figure>
     {% endfor %}
@@ -52,9 +53,9 @@ layout: default
 
 <section class="section" id="publications">
   <h2 class="section-title">Publications</h2>
-  <p class="section-note">* denotes equal contribution</p>
+  <p class="section-note">* equal contribution &middot; &dagger; equal advising</p>
   <div class="pub-list">
-    {% assign pubs = site.publications | sort: 'path' | reverse %}
+    {% assign pubs = site.publications | sort: 'date' | reverse %}
     {% for pub in pubs %}
     {% include publication.html pub=pub %}
     {% endfor %}

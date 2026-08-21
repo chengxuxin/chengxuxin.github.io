@@ -18,8 +18,10 @@
   <meta name="author" content="{{ site.name }}">
   {% seo title=false %}
 
-  <link rel="canonical" href="{{ page.url | replace: 'index.html', '' | prepend: site.baseurl | prepend: site.url }}">
-  <link rel="shortcut icon" type="image/png" href="{{ site.baseurl }}/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ '/images/favicon_io/favicon-32x32.png' | relative_url }}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{{ '/images/favicon_io/favicon-16x16.png' | relative_url }}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ '/images/favicon_io/apple-touch-icon.png' | relative_url }}">
+  <link rel="shortcut icon" href="{{ '/images/favicon_io/favicon.ico' | relative_url }}">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -28,6 +30,7 @@
 </head>
 
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <nav class="site-nav">
     <div class="site-nav-inner">
       <a class="site-nav-name" href="{{ site.baseurl }}/">{{ site.name }}</a>
@@ -40,7 +43,7 @@
     </div>
   </nav>
 
-  <main class="site-main">
+  <main class="site-main" id="main">
     {{ content }}
   </main>
 
@@ -55,7 +58,7 @@
       var video = thumb.querySelector('video');
       var img = thumb.querySelector('img[data-gif]');
       if (video) {
-        thumb.addEventListener('mouseenter', function () { video.play(); });
+        thumb.addEventListener('mouseenter', function () { video.play().catch(function () {}); });
         thumb.addEventListener('mouseleave', function () { video.pause(); video.currentTime = 0; });
       } else if (img) {
         var still = img.src;
@@ -64,19 +67,71 @@
       }
     });
 
-    // Lazy-load BibTeX text the first time an entry is expanded
-    document.querySelectorAll('.pub-bib').forEach(function (details) {
-      details.addEventListener('toggle', function () {
-        var pre = details.querySelector('pre');
-        if (details.open && pre && !pre.dataset.loaded) {
-          pre.dataset.loaded = '1';
+    // BibTeX toggle: show/hide the block under the link row, fetch text on first open
+    document.querySelectorAll('.pub-bib-toggle').forEach(function (btn) {
+      var box = document.getElementById(btn.getAttribute('aria-controls'));
+      if (!box) return;
+      var pre = box.querySelector('pre');
+      btn.addEventListener('click', function () {
+        var open = box.hidden;
+        box.hidden = !open;
+        btn.classList.toggle('is-open', open);
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        if (open && !pre.dataset.loaded) {
           fetch(pre.dataset.src)
             .then(function (r) { return r.text(); })
-            .then(function (t) { pre.textContent = t.trim(); })
-            .catch(function () { pre.textContent = 'Failed to load BibTeX.'; });
+            .then(function (t) { pre.textContent = t.trim(); pre.dataset.loaded = '1'; })
+            .catch(function () { pre.textContent = 'Failed to load BibTeX. Click BibTeX again to retry.'; });
         }
       });
     });
+
+    // Copy BibTeX to clipboard
+    document.querySelectorAll('.pub-bib-copy').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var pre = btn.parentNode.querySelector('pre');
+        if (!pre.dataset.loaded) return;
+        var flash = function () {
+          btn.textContent = 'Copied';
+          btn.classList.add('is-copied');
+          setTimeout(function () { btn.textContent = 'Copy'; btn.classList.remove('is-copied'); }, 1500);
+        };
+        var fallback = function () {
+          var r = document.createRange(); r.selectNodeContents(pre);
+          var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r);
+          try { document.execCommand('copy'); } catch (e) {}
+          sel.removeAllRanges();
+          flash();
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(pre.textContent).then(flash).catch(fallback);
+        } else {
+          fallback();
+        }
+      });
+    });
+
+    // Highlight videos: play only while in view; respect reduced-motion
+    (function () {
+      var vids = document.querySelectorAll('.highlight-video');
+      if (!vids.length) return;
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // leave posters static
+      if (!('IntersectionObserver' in window)) {
+        vids.forEach(function (v) { v.play().catch(function () {}); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting && !document.hidden) { v.play().catch(function () {}); }
+          else { v.pause(); }
+        });
+      }, { threshold: 0.25 });
+      vids.forEach(function (v) { io.observe(v); });
+      document.addEventListener('visibilitychange', function () {
+        if (document.hidden) vids.forEach(function (v) { v.pause(); });
+      });
+    })();
   </script>
 </body>
 

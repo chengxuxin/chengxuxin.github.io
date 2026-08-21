@@ -1,6 +1,14 @@
 # Site configuration
 name: Xuxin Cheng
-url: https://chengxuxin.github.io
+url: https://xuxin.ai
+description: >-
+  Xuxin Cheng is a researcher at Meta building AI systems that see, think,
+  and act in real time. PhD from UC San Diego; previously CMU and UC Berkeley.
+  Robot learning, humanoids, teleoperation, and embodied AI.
+image: /images/grad.jpg
+twitter:
+  username: xuxin_cheng
+  card: summary
 
 # Used to auto-bold your name in publication author lists
 name_bold: "<strong>Xuxin Cheng</strong>"

@@ -8,7 +8,7 @@
   --surface: #ffffff;       // cards, nav pill
   --text: #1c1c1a;          // primary ink
   --muted: #6b6b64;         // secondary ink
-  --faint: #8f8f87;         // tertiary ink (dates, footnotes)
+  --faint: #6d6d66;         // tertiary ink (dates, footnotes) — WCAG AA on --bg
   --hairline: rgba(20, 20, 15, 0.09);
   --chip-bg: rgba(20, 20, 15, 0.043);
   --chip-bg-hover: rgba(20, 20, 15, 0.085);
@@ -70,6 +70,36 @@ a {
 
 strong {
   font-weight: 600;
+}
+
+// Keyboard skip link (visually hidden until focused)
+.skip-link {
+  position: absolute;
+  left: 8px;
+  top: -48px;
+  z-index: 100;
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--hairline);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 13px;
+  transition: top 0.15s ease;
+
+  &:focus {
+    top: 8px;
+    text-decoration: none;
+  }
+}
+
+// Visible keyboard focus across all interactive elements
+a:focus-visible,
+button:focus-visible,
+.chip:focus-visible,
+summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 5px;
 }
 
 ::selection {
@@ -219,6 +249,16 @@ strong {
     }
   }
 
+  .hero-text p a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: rgba(194, 65, 12, 0.35);
+
+    &:hover {
+      text-decoration-color: var(--accent);
+    }
+  }
+
   .hero-tagline {
     font-family: var(--font-serif);
     font-style: italic;
@@ -251,12 +291,13 @@ strong {
   border-radius: 5px;
   padding: 3px 10px;
   white-space: nowrap;
-  transition: background 0.12s ease, color 0.12s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
 
   &:hover {
     text-decoration: none;
-    color: var(--text);
-    background: var(--chip-bg-hover);
+    color: var(--accent);
+    border-color: var(--accent);
+    background: transparent;
   }
 }
 
@@ -360,7 +401,13 @@ strong {
     object-fit: cover;
     border-radius: var(--radius);
     background: var(--chip-bg);
+    transition: transform 0.25s ease;
   }
+}
+
+.pub:hover .pub-thumb img,
+.pub:hover .pub-thumb video {
+  transform: scale(1.02);
 }
 
 .pub-body {
@@ -405,22 +452,23 @@ strong {
 .pub-venue-badge,
 .pub-award-badge {
   font-family: var(--font-mono);
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 500;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
+  letter-spacing: 0.03em;
   border-radius: 5px;
-  padding: 3px 9px;
+  padding: 2px 9px;
 }
 
 .pub-venue-badge {
-  color: var(--muted);
-  background: var(--chip-bg);
+  color: var(--accent);
+  background: rgba(194, 65, 12, 0.08);
+  border: 1px solid rgba(194, 65, 12, 0.28);
 }
 
 .pub-award-badge {
   color: var(--accent-warm);
-  background: rgba(194, 65, 12, 0.08);
+  background: rgba(194, 65, 12, 0.14);
+  border: 1px solid rgba(154, 52, 18, 0.35);
 }
 
 .pub-note {
@@ -449,39 +497,35 @@ strong {
   }
 }
 
-// BibTeX expander
-.pub-bib {
-  display: inline;
+// BibTeX: toggle chip stays in the link row; the text expands below it
+.pub-bib-toggle {
+  cursor: pointer;
+  font: inherit;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: inherit;
 
-  // when open, take the full row so the bib text spans the card width
-  &[open] {
-    flex-basis: 100%;
+  &.is-open {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: transparent;
   }
+}
 
-  summary {
-    @extend .chip;
-    display: block;
-    width: fit-content;
-    cursor: pointer;
-    list-style: none;
+.pub-bib-body {
+  position: relative;
+  margin-top: 12px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius);
 
-    &::-webkit-details-marker {
-      display: none;
-    }
-  }
-
-  &[open] summary {
-    color: var(--text);
-    background: var(--chip-bg-hover);
+  &[hidden] {
+    display: none;
   }
 
   pre {
-    display: block;
-    margin-top: 10px;
-    padding: 14px 16px;
-    background: var(--surface);
-    border: 1px solid var(--hairline);
-    border-radius: var(--radius);
+    margin: 0;
     font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1.55;
@@ -489,6 +533,32 @@ strong {
     overflow-x: auto;
     white-space: pre-wrap;
     word-break: break-word;
+  }
+}
+
+.pub-bib-copy {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.03em;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--hairline);
+  border-radius: 5px;
+  padding: 2px 9px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+
+  &:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  &.is-copied {
+    color: var(--accent);
+    border-color: var(--accent);
   }
 }
 
@@ -564,6 +634,19 @@ strong {
   .pub-thumb {
     width: 100%;
     align-self: stretch;
+  }
+
+  .chip {
+    padding: 7px 12px;
+  }
+
+  .hero-links,
+  .pub-links {
+    gap: 10px;
+  }
+
+  .pub-bib-copy {
+    padding: 6px 11px;
   }
 
   .news-list .news-date {
