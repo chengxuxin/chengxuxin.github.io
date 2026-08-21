@@ -38,6 +38,9 @@ exclude:
   - LICENSE
   - README.md
   - CNAME
+  # legacy 2018-2021 coursework/project pages — kept in repo, not published
+  - projects
+  - _pages/projects
 
 include:
   - _pages
