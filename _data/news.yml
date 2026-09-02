@@ -1,7 +1,7 @@
 # One entry per line of news. `date` is a display string; `text` supports
 # markdown links: [label](https://example.com)
 - date: May 2026
-  text: "Assured Robot Intelligence acquired by Meta"
+  text: "Assured Robot Intelligence [acquired by Meta](https://www.engadget.com/2162606/meta-acquires-assured-robot-intelligence-humanoid-ai/)"
 - date: Jun 2025
   text: "Invited talk at Meta"
 - date: Mar 2025
