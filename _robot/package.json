@@ -1,0 +1,15 @@
+{
+  "name": "robot-widget",
+  "private": true,
+  "type": "module",
+  "description": "Line-art G1 corner widget driven live by the GMT policy (MuJoCo WASM). Builds into ../assets/robot/.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/robustness.mjs"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "three": "^0.180.0",
+    "@mujoco/mujoco": "3.14.0"
+  }
+}

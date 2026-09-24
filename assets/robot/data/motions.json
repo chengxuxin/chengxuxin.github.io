@@ -1,0 +1,39 @@
+{
+ "clips": [
+  {
+   "name": "airkick_stand",
+   "fps": 29.887359619140625,
+   "frames": 200
+  },
+  {
+   "name": "squat",
+   "fps": 59.9999885559082,
+   "frames": 304
+  },
+  {
+   "name": "dance_waltz",
+   "fps": 33.2506217956543,
+   "frames": 269
+  },
+  {
+   "name": "crouchwalk_stand",
+   "fps": 29.933774948120117,
+   "frames": 227
+  },
+  {
+   "name": "kick_walk",
+   "fps": 29.97416114807129,
+   "frames": 291
+  },
+  {
+   "name": "dance",
+   "seconds": 10,
+   "fps": 30.0,
+   "frames": 690
+  }
+ ],
+ "idle": {
+  "from": "airkick_stand",
+  "frame": -1
+ }
+}

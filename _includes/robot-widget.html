@@ -1,0 +1,23 @@
+{% comment %}
+  Footer easter egg: a line-art Unitree G1 standing on the footer rule, controlled live by the GMT policy
+  (MuJoCo WASM in a Web Worker). Desktop only; downloads only when the reader scrolls near the bottom;
+  pauses when off screen. Source: _robot/.
+{% endcomment %}
+<div class="robot-widget" id="robot-widget" aria-hidden="true" hidden>
+  <a class="robot-widget-caption" href="#gmt" tabindex="-1">live &middot; GMT policy &middot; poke it</a>
+  <div class="rw-box"><canvas></canvas></div>
+</div>
+<script>
+  (function () {
+    var el = document.getElementById('robot-widget');
+    if (!('Worker' in window) || !('IntersectionObserver' in window) ||
+        !window.matchMedia('(min-width: 721px) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches) return;
+    el.hidden = false;
+    var io = new IntersectionObserver(function (entries) {
+      if (!entries[0].isIntersecting) return;
+      io.disconnect();
+      import('{{ "/assets/robot/robot-widget.js" | relative_url }}').then(function (m) { m.mount(el); });
+    }, { rootMargin: '1200px 0px' });   // start loading ~1-2 screens before it comes into view
+    io.observe(el);
+  })();
+</script>

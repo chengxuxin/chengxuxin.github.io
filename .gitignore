@@ -10,3 +10,6 @@ package.json
 tn/
 favicon.ico
 .claude/
+# footer widget build deps
+_robot/node_modules/
+!_robot/package.json
