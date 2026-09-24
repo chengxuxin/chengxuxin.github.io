@@ -5,11 +5,13 @@
   video: /videos/pakour_live_demo-comp.mp4?v=3
   poster: /videos/posters/parkour.jpg
   caption: "Live demo at CoRL 2023."
+  live: parkour        # "try it live": the teacher policy on generated terrain (_parkour/, _includes/live-demo.html)
 - title: AMO
   url: https://amo-humanoid.github.io/
   video: /videos/amo.mp4
   poster: /videos/posters/amo.jpg
   caption: "Full kinematic workspace control for humanoids."
+  live: amo            # "try it live": the released AMO policy in the browser (_amo/)
 - title: OpenTeleVision
   url: https://robot-tv.github.io/
   video: /videos/tv.mp4?v=2

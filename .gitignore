@@ -10,6 +10,10 @@ package.json
 tn/
 favicon.ico
 .claude/
-# footer widget build deps
+# live robot widgets / demos: build deps (their package.json files are kept)
 _robot/node_modules/
+_parkour/node_modules/
+_amo/node_modules/
 !_robot/package.json
+!_parkour/package.json
+!_amo/package.json

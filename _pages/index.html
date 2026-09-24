@@ -32,8 +32,9 @@ image: /images/grad.jpg
   <h2 class="section-title">Highlights</h2>
   <div class="highlight-grid">
     {% for item in site.data.highlights %}
-    <figure class="highlight">
+    <figure class="highlight"{% if item.live %} data-live="{{ item.live }}"{% endif %}>
       <video class="highlight-video" src="{{ item.video | relative_url }}" poster="{{ item.poster | relative_url }}" muted loop playsinline preload="none" aria-label="{{ item.title }} demo video"></video>
+      {% if item.live %}<button class="hl-live" type="button" hidden><i></i>try it live</button>{% endif %}
       <figcaption><a href="{{ item.url }}">{{ item.title }}</a> &mdash; {{ item.caption }}</figcaption>
     </figure>
     {% endfor %}
@@ -63,4 +64,5 @@ image: /images/grad.jpg
   </div>
 </section>
 
+{% include live-demo.html %}
 {% include robot-widget.html %}

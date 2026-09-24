@@ -1,0 +1,111 @@
+{% comment %}
+  Live demos, opened from Highlights cards that set `live:` in _data/highlights.yml ("try it live", or a
+  click on the video). The card's video expands into the panel (full screen on phones) and keeps
+  playing while the released policy loads (MuJoCo WASM in a Web Worker), then crossfades to the live
+  robot. Nothing downloads until a demo is opened (hovering starts it on desktop). Sources: _parkour/, _amo/.
+{% endcomment %}
+<dialog class="live-demo" id="live-parkour" data-module="{{ '/assets/parkour/parkour-demo.js' | relative_url }}" aria-label="Extreme Parkour live demo">
+  <div class="ld-panel" tabindex="-1">
+    <video class="ld-video" muted loop playsinline aria-hidden="true"></video>
+    <canvas class="ld-canvas"></canvas>
+    <div class="ld-head">
+      <span class="ld-title"><i></i>Extreme Parkour &middot; live policy</span>
+      <span class="ld-course"></span>
+    </div>
+    <button class="ld-close" type="button" aria-label="Close">&times;</button>
+    <div class="ld-controls"></div>
+    <div class="ld-time"></div>
+    <div class="ld-status"><span class="ld-loading">loading the policy&hellip;</span></div>
+    <div class="ld-progress"><i></i></div>
+  </div>
+</dialog>
+<dialog class="live-demo" id="live-amo" data-module="{{ '/assets/amo/amo-demo.js' | relative_url }}" aria-label="AMO live demo">
+  <div class="ld-panel" tabindex="-1">
+    <video class="ld-video" muted loop playsinline aria-hidden="true"></video>
+    <canvas class="ld-canvas"></canvas>
+    <svg class="ld-tether" aria-hidden="true"><line x1="0" y1="0" x2="0" y2="0"/></svg>
+    <div class="ld-head">
+      <span class="ld-title"><i></i>AMO &middot; live policy</span>
+      <span class="ld-hint" data-touch="drag the orange points: a hand reaches for your finger, the chest bends, squats and leans the whole body &middot; drag the floor to look around">drag the orange points: a hand reaches for your cursor, the chest bends, squats and leans the whole body &middot; scroll on the robot to twist &middot; WASD to walk &middot; drag the floor to look around</span>
+    </div>
+    <button class="ld-close" type="button" aria-label="Close">&times;</button>
+    <div class="ld-gauges" aria-hidden="true"></div>
+    <div class="ld-presets"></div>
+    <div class="ld-status"><span class="ld-loading">loading the policy&hellip;</span><span class="ld-fallen">fell &middot; resetting</span></div>
+    <div class="ld-progress"><i></i></div>
+  </div>
+</dialog>
+<script>
+  (function () {
+    if (!window.HTMLDialogElement || !('Worker' in window)) return;
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var narrow = window.matchMedia('(max-width: 720px)');           // phones: full-screen panel
+    if (window.matchMedia('(pointer: coarse)').matches)             // touch: no hover, wheel or keys
+      document.querySelectorAll('.live-demo .ld-hint[data-touch]').forEach(function (h) { h.textContent = h.dataset.touch; });
+
+    function setup(fig, dlg) {
+      var panel = dlg.querySelector('.ld-panel'), pv = dlg.querySelector('.ld-video'), bar = dlg.querySelector('.ld-progress i');
+      var video = fig.querySelector('video'), pill = fig.querySelector('.hl-live'), mod = null, warm = null;
+
+      // hovering the card (or focusing its button) starts the downloads, so opening is quicker
+      function preload() {
+        warm = warm || import(dlg.dataset.module).then(function (m) { if (m.preload) m.preload(); return m; });
+        return warm;
+      }
+
+      // panel <-> card video, as a transform on the panel (FLIP); a plain fade for the full-screen panel
+      function morph(from, reverse) {
+        if (narrow.matches) {
+          var fade = [{ opacity: 0, transform: 'scale(0.97)' }, { opacity: 1, transform: 'none' }];
+          return panel.animate(reverse ? fade.reverse() : fade, { duration: calm ? 1 : 260, easing: 'ease-out' }).finished;
+        }
+        var to = panel.getBoundingClientRect();
+        var f = { transform: 'translate(' + (from.left - to.left) + 'px,' + (from.top - to.top) + 'px) scale(' + from.width / to.width + ',' + from.height / to.height + ')' };
+        return panel.animate(reverse ? [{ transform: 'none' }, f] : [f, { transform: 'none' }],
+          { duration: calm ? 1 : 420, easing: 'cubic-bezier(.2,.75,.2,1)' }).finished;
+      }
+
+      function open() {
+        if (dlg.open) return;
+        pv.src = video.currentSrc || video.src; pv.poster = video.poster;
+        try { pv.currentTime = video.currentTime; } catch (e) {}
+        pv.play().catch(function () {});
+        dlg.showModal();
+        document.documentElement.classList.add('ld-lock');
+        dlg.classList.add('is-morphing');
+        morph(video.getBoundingClientRect(), false).then(function () { dlg.classList.remove('is-morphing'); dlg.classList.add('is-open'); });
+        preload().then(function (m) {
+          mod = m;
+          return m.open(dlg, function (p) { bar.style.width = Math.round(p * 100) + '%'; });
+        });
+      }
+
+      function close() {
+        if (!dlg.open || dlg.classList.contains('is-closing')) return;
+        dlg.classList.add('is-closing', 'is-morphing'); dlg.classList.remove('is-open');
+        if (mod) mod.close();
+        try { pv.currentTime = video.currentTime; } catch (e) {}
+        morph(video.getBoundingClientRect(), true).then(function () {
+          dlg.close(); dlg.classList.remove('is-closing', 'is-morphing');
+          document.documentElement.classList.remove('ld-lock');
+          pv.pause();
+        });
+      }
+
+      dlg.addEventListener('cancel', function (e) { e.preventDefault(); close(); });      // Esc
+      dlg.addEventListener('click', function (e) { if (e.target === dlg) close(); });    // backdrop
+      dlg.querySelector('.ld-close').addEventListener('click', close);
+      pill.hidden = false;
+      fig.classList.add('has-live');
+      pill.addEventListener('click', open);
+      video.addEventListener('click', open);
+      fig.addEventListener('pointerenter', preload, { once: true });
+      pill.addEventListener('focus', preload, { once: true });
+    }
+
+    document.querySelectorAll('.highlight[data-live]').forEach(function (fig) {
+      var dlg = document.getElementById('live-' + fig.dataset.live);
+      if (dlg) setup(fig, dlg);
+    });
+  })();
+</script>

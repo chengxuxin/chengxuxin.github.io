@@ -1,0 +1,15 @@
+{
+  "name": "amo-demo",
+  "private": true,
+  "type": "module",
+  "description": "Live AMO demo (RSS 2025 released policy on a G1, MuJoCo WASM), opened from the Highlights card. Builds into ../assets/amo/.",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node test/commands.mjs 6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "three": "^0.180.0",
+    "@mujoco/mujoco": "3.14.0"
+  }
+}

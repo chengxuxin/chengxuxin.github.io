@@ -333,6 +333,423 @@ summary:focus-visible {
 }
 
 // ============================================================
+// Live demo: "try it live" on a Highlights card opens the policy running in the browser
+// (desktop only; see _includes/live-demo.html and _amo/)
+// ============================================================
+
+.highlight.has-live {
+  position: relative;
+
+  video {
+    cursor: pointer;
+  }
+
+  &:hover .hl-live {
+    color: var(--accent);
+  }
+}
+
+.hl-live {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 11px 4px 9px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(251, 251, 249, 0.9);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  cursor: pointer;
+  transition: color 0.2s ease;
+
+  &[hidden] {
+    display: none;
+  }
+
+  i {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: live-dot 2.4s ease-in-out infinite;
+  }
+}
+
+@keyframes ld-ping {
+  from { transform: scale(1); opacity: 0.7; }
+  to { transform: scale(2.6); opacity: 0; }
+}
+
+@keyframes live-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(194, 65, 12, 0.45); }
+  50% { box-shadow: 0 0 0 4px rgba(194, 65, 12, 0); }
+}
+
+html.ld-lock,
+html.ld-lock body {
+  overflow: hidden;
+}
+
+.live-demo {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+
+  &::backdrop {
+    background: rgba(251, 251, 249, 0.88);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+  }
+
+  .ld-panel {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: min(1040px, 92vw, calc(84vh * 16 / 9));
+    aspect-ratio: 16 / 9;
+    height: auto;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--bg);
+    box-shadow: 0 24px 70px rgba(20, 20, 15, 0.14);
+    transform-origin: 0 0;
+    outline: none;
+  }
+
+  .ld-video,
+  .ld-canvas,
+  .ld-tether {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .ld-video {
+    object-fit: cover;
+    transition: opacity 0.6s ease;
+  }
+
+  .ld-canvas {
+    display: block;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    touch-action: none;
+  }
+
+  &.is-live .ld-canvas { opacity: 1; }
+  &.is-live .ld-video { opacity: 0; }
+
+  // while the panel morphs to / from the card, show the card's video so both ends match
+  &.is-morphing {
+    .ld-canvas { opacity: 0; transition-duration: 0.2s; }
+    .ld-video { opacity: 1; transition-duration: 0.2s; }
+  }
+
+  .ld-tether {
+    pointer-events: none;
+    overflow: visible;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+
+    line {
+      stroke: var(--accent);
+      stroke-width: 1.5;
+      stroke-dasharray: 4 4;
+    }
+  }
+
+  .ld-tether line { opacity: 0; transition: opacity 0.2s ease; }
+  &.is-grabbing .ld-tether line { opacity: 1; }
+
+  // the three drag points: chest, left hand, right hand (they pulse until the robot is first touched)
+  .ld-h {
+    .ld-h-dot {
+      fill: var(--bg);
+      stroke: var(--accent);
+      stroke-width: 1.8;
+      transition: r 0.15s ease, fill 0.15s ease;
+    }
+
+    .ld-h-ring {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 1.2;
+      opacity: 0;
+      transform-box: fill-box;
+      transform-origin: center;
+    }
+
+    &.is-hot .ld-h-dot { r: 8; }
+    &.is-active .ld-h-dot { fill: var(--accent); }
+  }
+
+  &.is-live:not(.is-touched) .ld-h-ring { animation: ld-ping 2s ease-out infinite; }
+
+  // overlays appear once the panel has expanded
+  .ld-head, .ld-close, .ld-gauges, .ld-presets, .ld-controls, .ld-time, .ld-status {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  &.is-open {
+    .ld-head, .ld-close, .ld-status { opacity: 1; }
+  }
+
+  &.is-open.is-live {
+    .ld-gauges, .ld-presets, .ld-controls, .ld-time, .ld-tether { opacity: 1; }
+  }
+
+  // parkour: fade out while a finished course is swapped for a new one
+  &.is-live.is-swapping .ld-canvas { opacity: 0; transition-duration: 0.3s; }
+
+  .ld-head {
+    top: 16px;
+    left: 20px;
+    right: 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    pointer-events: none;
+  }
+
+  .ld-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+
+    i {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+  }
+
+  .ld-hint {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--faint);
+    transition: opacity 0.6s ease;
+  }
+
+  &.is-touched .ld-hint { opacity: 0.45; }
+
+  // parkour: the course, terrain by terrain (the current one in accent)
+  .ld-course {
+    margin-top: 6px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--faint);
+
+    span { transition: color 0.2s ease; }
+    span.on { color: var(--accent); }
+    em { font-style: normal; opacity: 0.7; }
+    i { font-style: normal; margin: 0 8px; opacity: 0.5; }
+  }
+
+  .ld-controls {
+    left: 20px;
+    bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .chip {
+      border: 1px solid transparent;
+      cursor: pointer;
+    }
+
+    .chip.on {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: transparent;
+    }
+  }
+
+  .ld-speed {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 10px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--faint);
+
+    input { width: 100px; accent-color: var(--accent); }
+    output { min-width: 56px; color: var(--muted); }
+  }
+
+  .ld-time {
+    right: 20px;
+    bottom: 20px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    color: var(--faint);
+    pointer-events: none;
+  }
+
+  .ld-close {
+    top: 10px;
+    right: 12px;
+    width: 34px;
+    height: 34px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    font-size: 22px;
+    line-height: 1;
+    color: var(--faint);
+    cursor: pointer;
+
+    &:hover { color: var(--accent); }
+  }
+
+  .ld-gauges {
+    right: 20px;
+    bottom: 18px;
+    display: grid;
+    gap: 7px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--faint);
+  }
+
+  .ld-gauge {
+    display: grid;
+    grid-template-columns: 44px 110px 50px;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .ld-g-val {
+    text-align: right;
+    color: var(--muted);
+  }
+
+  .ld-g-track {
+    position: relative;
+    height: 14px;
+    cursor: pointer;
+
+    &::before {                                  // the range
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 7px;
+      border-top: 1px solid var(--hairline-strong, rgba(20, 20, 15, 0.18));
+    }
+
+    i {
+      position: absolute;
+      top: 2px;
+      width: 2px;
+      height: 10px;
+      margin-left: -1px;
+      transition: left 0.08s linear;
+    }
+  }
+
+  .ld-g-cmd { background: var(--accent); }                  // commanded
+  .ld-g-real { background: var(--text); opacity: 0.55; }    // what the robot actually does
+
+  .ld-presets {
+    left: 20px;
+    bottom: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    max-width: 55%;
+
+    .chip {
+      border: 1px solid transparent;
+      cursor: pointer;
+      font-family: var(--font-mono);
+    }
+
+    .chip.on {
+      color: var(--accent);
+      border-color: var(--accent);
+      background: transparent;
+    }
+  }
+
+  .ld-status {
+    left: 0;
+    right: 0;
+    bottom: 22px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.04em;
+    color: var(--faint);
+    pointer-events: none;
+
+    span { display: none; }
+  }
+
+  &:not(.is-live) .ld-loading { display: inline; }
+  &.is-fallen .ld-fallen { display: inline; }
+
+  .ld-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 2px;
+    transition: opacity 0.4s ease;
+
+    i {
+      display: block;
+      width: 0;
+      height: 100%;
+      background: var(--accent);
+      transition: width 0.4s ease;
+    }
+  }
+
+  &.is-live .ld-progress { opacity: 0; }
+
+  // phones: the panel fills the screen and the overlays stack along the bottom
+  @media (max-width: 720px) {
+    .ld-panel {
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
+      aspect-ratio: auto;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .ld-head { top: 14px; left: 16px; right: 56px; }
+    .ld-close { top: 6px; right: 6px; width: 44px; height: 44px; }
+    .ld-controls { left: 16px; right: 16px; bottom: 42px; flex-wrap: wrap; row-gap: 10px; }
+    .ld-speed { margin-left: 0; }
+    .ld-time { left: 16px; right: auto; bottom: 16px; }
+    .ld-gauges { left: 16px; right: 16px; bottom: 18px; }
+    .ld-gauge { grid-template-columns: 44px 1fr 50px; }
+    .ld-presets { left: 16px; right: 16px; bottom: 132px; max-width: none; }
+  }
+}
+
+// ============================================================
 // News
 // ============================================================
 
