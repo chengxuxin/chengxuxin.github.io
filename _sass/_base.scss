@@ -382,6 +382,10 @@ summary:focus-visible {
   }
 }
 
+@keyframes ld-backdrop-in {
+  from { opacity: 0; }
+}
+
 @keyframes ld-ping {
   from { transform: scale(1); opacity: 0.7; }
   to { transform: scale(2.6); opacity: 0; }
@@ -392,8 +396,8 @@ summary:focus-visible {
   50% { box-shadow: 0 0 0 4px rgba(194, 65, 12, 0); }
 }
 
-html.ld-lock,
-html.ld-lock body {
+// only the root: hiding body's overflow too would make it a scroll container and un-stick the nav
+html.ld-lock {
   overflow: hidden;
 }
 
@@ -405,11 +409,16 @@ html.ld-lock body {
   max-height: none;
   overflow: visible;
 
+  // the dimmed page fades in with the opening zoom and out with the closing one (no pop at the end)
   &::backdrop {
     background: rgba(251, 251, 249, 0.88);
     -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
+    transition: opacity 0.38s ease;
   }
+
+  &[open]::backdrop { animation: ld-backdrop-in 0.42s ease; }
+  &.is-closing::backdrop { opacity: 0; }
 
   .ld-panel {
     position: fixed;
@@ -729,6 +738,8 @@ html.ld-lock body {
 
   // phones: the panel fills the screen and the overlays stack along the bottom
   @media (max-width: 720px) {
+    &::backdrop { transition-duration: 0.24s; }   // done with the panel's 0.26s fade
+
     .ld-panel {
       width: 100vw;
       height: 100vh;

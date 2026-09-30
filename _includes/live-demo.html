@@ -53,16 +53,21 @@
         return warm;
       }
 
-      // panel <-> card video, as a transform on the panel (FLIP); a plain fade for the full-screen panel
+      // panel <-> card video, as a transform on the panel (FLIP); a plain fade for the full-screen panel.
+      // Closing holds its last frame (fill) until the dialog is gone, so the panel can't pop back for a frame.
       function morph(from, reverse) {
+        var fill = reverse ? 'forwards' : 'none';
         if (narrow.matches) {
           var fade = [{ opacity: 0, transform: 'scale(0.97)' }, { opacity: 1, transform: 'none' }];
-          return panel.animate(reverse ? fade.reverse() : fade, { duration: calm ? 1 : 260, easing: 'ease-out' }).finished;
+          return panel.animate(reverse ? fade.reverse() : fade, { duration: calm ? 1 : 260, easing: 'ease-out', fill: fill });
         }
-        var to = panel.getBoundingClientRect();
-        var f = { transform: 'translate(' + (from.left - to.left) + 'px,' + (from.top - to.top) + 'px) scale(' + from.width / to.width + ',' + from.height / to.height + ')' };
-        return panel.animate(reverse ? [{ transform: 'none' }, f] : [f, { transform: 'none' }],
-          { duration: calm ? 1 : 420, easing: 'cubic-bezier(.2,.75,.2,1)' }).finished;
+        // at the card end, undo the scale on the corners and drop the shadow, so the hand-off to the card is seamless
+        var to = panel.getBoundingClientRect(), sx = from.width / to.width, sy = from.height / to.height;
+        var r = parseFloat(getComputedStyle(panel).borderTopLeftRadius) || 0;
+        var f = { transform: 'translate(' + (from.left - to.left) + 'px,' + (from.top - to.top) + 'px) scale(' + sx + ',' + sy + ')',
+                  borderRadius: r / sx + 'px / ' + r / sy + 'px', boxShadow: '0 0 0 rgba(20,20,15,0)' };
+        return panel.animate(reverse ? [{}, f] : [f, {}],
+          { duration: calm ? 1 : 420, easing: 'cubic-bezier(.2,.75,.2,1)', fill: fill });
       }
 
       function open() {
@@ -73,7 +78,7 @@
         dlg.showModal();
         document.documentElement.classList.add('ld-lock');
         dlg.classList.add('is-morphing');
-        morph(video.getBoundingClientRect(), false).then(function () { dlg.classList.remove('is-morphing'); dlg.classList.add('is-open'); });
+        morph(video.getBoundingClientRect(), false).finished.then(function () { dlg.classList.remove('is-morphing'); dlg.classList.add('is-open'); });
         preload().then(function (m) {
           mod = m;
           return m.open(dlg, function (p) { bar.style.width = Math.round(p * 100) + '%'; });
@@ -85,8 +90,9 @@
         dlg.classList.add('is-closing', 'is-morphing'); dlg.classList.remove('is-open');
         if (mod) mod.close();
         try { pv.currentTime = video.currentTime; } catch (e) {}
-        morph(video.getBoundingClientRect(), true).then(function () {
-          dlg.close(); dlg.classList.remove('is-closing', 'is-morphing');
+        var shrink = morph(video.getBoundingClientRect(), true);         // the backdrop fades out alongside (CSS)
+        shrink.finished.then(function () {
+          dlg.close(); shrink.cancel(); dlg.classList.remove('is-closing', 'is-morphing');
           document.documentElement.classList.remove('ld-lock');
           pv.pause();
         });
