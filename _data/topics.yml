@@ -1,0 +1,11 @@
+# Research areas for the filter in the Research section on the homepage, in the order the buttons appear.
+#   id:    what a paper lists under `topics:` in its _publications/ file
+#   name:  the button label
+#   title: optional spelled-out name (tooltip / screen readers)
+- id: learning
+  name: Human-Robot Learning
+- id: mobility
+  name: Mobility
+- id: wbc
+  name: WBC
+  title: Whole-Body Control

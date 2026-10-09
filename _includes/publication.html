@@ -2,7 +2,7 @@
   Renders one publication card. Expects `pub` (a document from the
   _publications collection). See README.md for the front-matter format.
 {% endcomment %}
-<article class="pub" id="{{ pub.abbr }}">
+<article class="pub" id="{{ pub.abbr }}" data-topics="{{ pub.topics | join: ' ' }}">
   <div class="pub-thumb">
     {% if pub.video %}
     <a href="{{ pub.website }}">

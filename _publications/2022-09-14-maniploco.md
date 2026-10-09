@@ -3,6 +3,7 @@ abbr: "maniploco"
 title: "Deep Whole-Body Control: Learning a Unified Policy for Manipulation and Locomotion"
 authors: "Zipeng Fu*, Xuxin Cheng*, Deepak Pathak"
 venue: "CoRL 2022"
+topics: ["wbc"]
 award: "Oral, Best System Paper Finalist"
 image: "/_pages/research/manip-loco/demo.jpg"
 gif: "/_pages/research/manip-loco/demo.gif"

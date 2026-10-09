@@ -198,6 +198,67 @@ summary:focus-visible {
   border-bottom: 1px solid var(--hairline);
 }
 
+// A section title with controls at the right end of its rule (Research: the area filter)
+.section-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0 24px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--hairline);
+
+  .section-title {
+    margin-bottom: 0;
+    border-bottom: 0;
+  }
+}
+
+.pub-filter {
+  display: flex;
+  gap: 22px;
+  margin-bottom: -1px;               // the active tab's underline sits on the section rule
+  max-width: 100%;                   // on a very narrow screen the tabs scroll sideways, not the page
+  overflow-x: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar { display: none; }
+  &[hidden] { display: none; }
+
+  button {
+    @include mono-label;
+    padding: 0 0 10px;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.2s ease, border-color 0.2s ease;
+
+    &:hover { color: var(--text); }
+
+    &[aria-pressed="true"] {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    span {                           // paper count
+      margin-left: 6px;
+      font-size: 10px;
+      letter-spacing: 0;
+      opacity: 0.55;
+    }
+  }
+
+  @media (max-width: 720px) {
+    gap: 16px;
+
+    button { letter-spacing: 0.08em; }
+    button span { display: none; }
+  }
+}
+
 .section-note {
   font-size: 13px;
   color: var(--faint);
@@ -815,6 +876,11 @@ html.ld-lock {
   &:last-child {
     border-bottom: none;
   }
+
+  // filtered by research area: hidden cards drop out, and the first / last visible ones take the edge rules
+  &[hidden] { display: none; }
+  &.is-first { padding-top: 6px; }
+  &.is-last { border-bottom: none; }
 }
 
 .pub-thumb {

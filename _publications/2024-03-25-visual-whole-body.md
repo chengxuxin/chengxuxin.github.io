@@ -3,6 +3,7 @@ abbr: "vbc"
 title: "Visual Whole-Body Control for Legged Loco-Manipulation"
 authors: "Minghuan Liu*, Zixuan Chen*, Xuxin Cheng, Yandong Ji, Ruihan Yang, Xiaolong Wang"
 venue: "CoRL 2024"
+topics: ["wbc"]
 award: "Oral"
 image: "/_pages/research/visual-whole-body/demo.jpg"
 video: "/_pages/research/visual-whole-body/demo.mp4"

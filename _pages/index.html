@@ -53,8 +53,18 @@ image: /images/grad.jpg
   </ul>
 </section>
 
-<section class="section" id="publications">
-  <h2 class="section-title">Publications</h2>
+<section class="section" id="research">
+  <span id="publications"></span>{% comment %} old links to #publications still land here {% endcomment %}
+  <div class="section-head">
+    <h2 class="section-title">Research</h2>
+    {% comment %} Research-area filter: areas in _data/topics.yml, each paper's `topics:` in _publications/. {% endcomment %}
+    <div class="pub-filter" role="group" aria-label="Filter papers by research area" hidden>
+      <button type="button" data-topic="" aria-pressed="true">All<span></span></button>
+      {% for t in site.data.topics %}
+      <button type="button" data-topic="{{ t.id }}" aria-pressed="false"{% if t.title %} title="{{ t.title }}" aria-label="{{ t.title }}"{% endif %}>{{ t.name }}<span></span></button>
+      {% endfor %}
+    </div>
+  </div>
   <p class="section-note">* equal contribution &middot; &dagger; equal advising</p>
   <div class="pub-list">
     {% assign pubs = site.publications | sort: 'date' | reverse %}

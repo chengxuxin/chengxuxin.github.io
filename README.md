@@ -8,7 +8,7 @@ Personal academic homepage ([xuxin.ai](https://xuxin.ai)), built with Jekyll and
 _config.yml           Site config (name, collections)
 _layouts/default.html Page shell: head, sticky nav, footer, hover-video JS
 _includes/publication.html  One publication card (used by the homepage loop)
-_pages/index.html     Homepage: hero, highlights, news, publications
+_pages/index.html     Homepage: hero, highlights, news, research (the paper list)
 _publications/        One file per paper (see format below)
 _data/news.yml        News items
 _data/highlights.yml  Featured videos on the homepage
@@ -28,6 +28,7 @@ abbr: "parkour"
 title: "Extreme Parkour with Legged Robots"
 authors: "Xuxin Cheng*, Kexin Shi*, Ananye Agarwal, Deepak Pathak"
 venue: "ICRA 2024"
+topics: ["mobility"]               # research area(s) for the filter; ids from _data/topics.yml
 award: "Oral"                      # optional, shown highlighted
 note: "Also at CoRL 2023 Workshop" # optional, extra line under venue
 image: "/_pages/research/parkour/demo.jpg"

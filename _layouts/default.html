@@ -38,7 +38,7 @@
         <li><a href="#about">About</a></li>
         <li><a href="#highlights">Highlights</a></li>
         <li><a href="#news">News</a></li>
-        <li><a href="#publications">Publications</a></li>
+        <li><a href="#research">Research</a></li>
       </ul>
     </div>
   </nav>
@@ -66,6 +66,32 @@
         thumb.addEventListener('mouseleave', function () { img.src = still; });
       }
     });
+
+    // Research filter: show one research area at a time (areas come from each card's data-topics)
+    (function () {
+      var bar = document.querySelector('.pub-filter'), list = document.querySelector('.pub-list');
+      if (!bar || !list) return;
+      var pubs = [].slice.call(list.querySelectorAll('.pub')), btns = [].slice.call(bar.querySelectorAll('button'));
+      var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function has(pub, topic) { return !topic || (' ' + pub.dataset.topics + ' ').indexOf(' ' + topic + ' ') >= 0; }
+      function show(topic) {
+        var shown = pubs.filter(function (p) { p.hidden = !has(p, topic); return !p.hidden; });
+        pubs.forEach(function (p) {              // the list's first / last rules follow what is visible
+          p.classList.toggle('is-first', p === shown[0]);
+          p.classList.toggle('is-last', p === shown[shown.length - 1]);
+        });
+        btns.forEach(function (b) { b.setAttribute('aria-pressed', b.dataset.topic === topic ? 'true' : 'false'); });
+      }
+      btns.forEach(function (b) {
+        b.querySelector('span').textContent = pubs.filter(function (p) { return has(p, b.dataset.topic); }).length;
+        b.addEventListener('click', function () {
+          if (b.getAttribute('aria-pressed') === 'true') return;
+          show(b.dataset.topic);
+          if (!calm && list.animate) list.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'ease-out' });
+        });
+      });
+      bar.hidden = false;
+    })();
 
     // BibTeX toggle: show/hide the block under the link row, fetch text on first open
     document.querySelectorAll('.pub-bib-toggle').forEach(function (btn) {
